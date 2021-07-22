@@ -9,6 +9,7 @@ module CarrierwaveGlobalize
     delegate :"#{column}_will_change!", :"#{column}_changed?",
              to: :translation
 
+    self::Translation.send(:mount_uploader, column, uploader, options, &block)
     return if carrierwave_globalize_initialized?
 
     include CarrierwaveGlobalize::InstanceMethods
