@@ -25,16 +25,21 @@ module CarrierwaveGlobalize
   module InstanceMethods
     def self.included(model)
       model.instance_eval do
-        private :_mounter
+        private :_mounter, :_translations_mounter
       end
     end
 
     def _mounter(column)
       if translated_attribute_names.include?(column)
-        translation.send("_mounter", column)
+        _translations_mounter(column)
       else
         super(column)
       end
+    end
+
+    def _translations_mounter(column)
+      @_translations_mounter ||= {}
+      (@_translations_mounter[Globalize.locale.to_sym] ||= {})[column] ||= translation.send("_mounter", column)
     end
   end
 end
